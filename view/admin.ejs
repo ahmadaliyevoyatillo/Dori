@@ -1,0 +1,238 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <div class="catalog-toolbar" style="margin-bottom: 2rem;">
+    <h1 class="catalog-title"><%= t('admin_title') %></h1>
+  </div>
+
+  <div class="admin-layout">
+    <!-- Admin Sidebar -->
+    <div class="admin-sidebar">
+      <a href="/admin?tab=meds" class="admin-nav-btn <%= tab === 'meds' ? 'active' : '' %>" style="text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        <%= t('admin_tab_med') %>
+      </a>
+      <a href="/admin?tab=diseases" class="admin-nav-btn <%= tab === 'diseases' ? 'active' : '' %>" style="text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        <%= t('admin_tab_dis') %>
+      </a>
+      <a href="/admin?tab=users" class="admin-nav-btn <%= tab === 'users' ? 'active' : '' %>" style="text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <%= t('admin_tab_users') %>
+      </a>
+    </div>
+
+    <!-- Admin Kontent -->
+    <div>
+      <% if (tab === 'meds') { %>
+        <!-- ========== DORILAR BOSHQARUVI ========== -->
+        <div class="details-card-block">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 class="block-title" style="margin-bottom: 0; border-bottom: none;"><%= t('admin_tab_med') %></h2>
+            <button class="login-trigger-btn" onclick="document.getElementById('med-form-section').style.display = document.getElementById('med-form-section').style.display === 'none' ? 'block' : 'none';">
+              + <%= t('btn_add_new_med') %>
+            </button>
+          </div>
+
+          <!-- Yangi dori qo'shish formasi -->
+          <div id="med-form-section" style="display: none; margin-bottom: 2rem; background: var(--bg); padding: 1.5rem; border-radius: var(--radius-md);">
+            <h3 style="margin-bottom: 1rem;"><%= t('btn_add_new_med') %></h3>
+            <form method="POST" action="/admin/medicine/save">
+              <input type="hidden" name="id" id="med-edit-id" value="">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label class="form-label">Nomi (UZ)</label>
+                  <input type="text" name="name_uz" class="form-input" id="med-name-uz" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Name (EN)</label>
+                  <input type="text" name="name_en" class="form-input" id="med-name-en" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Turi (UZ)</label>
+                  <input type="text" name="type_uz" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Type (EN)</label>
+                  <input type="text" name="type_en" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><%= t('filter_category') %></label>
+                  <select name="category" class="sort-select" style="width: 100%;" required>
+                    <option value="painkillers">Painkillers</option>
+                    <option value="antibiotics">Antibiotics</option>
+                    <option value="cardio">Cardiovascular</option>
+                    <option value="vitamins">Vitamins</option>
+                    <option value="digestive">Digestive</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><%= t('attr_price') %> (so'm)</label>
+                  <input type="number" name="price" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ishlab chiqaruvchi (UZ)</label>
+                  <input type="text" name="manufacturer_uz" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Manufacturer (EN)</label>
+                  <input type="text" name="manufacturer_en" class="form-input" required>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group"><label class="form-label">Tavsif (UZ)</label><textarea name="description_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Description (EN)</label><textarea name="description_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Qo'llash (UZ)</label><textarea name="usage_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Usage (EN)</label><textarea name="usage_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Doza (UZ)</label><textarea name="dosage_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Dosage (EN)</label><textarea name="dosage_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Nojo'ya ta'sir (UZ)</label><textarea name="sideEffects_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Side Effects (EN)</label><textarea name="sideEffects_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Ogohlantirish (UZ)</label><textarea name="warnings_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Warnings (EN)</label><textarea name="warnings_en" class="form-textarea" rows="2" required></textarea></div>
+              </div>
+              <div class="form-group" style="margin-top: 0.5rem;">
+                <label class="filter-option">
+                  <input type="checkbox" name="prescription"> Retseptli dori
+                </label>
+              </div>
+              <button type="submit" class="login-trigger-btn" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                <%= t('btn_save_changes') %>
+              </button>
+            </form>
+          </div>
+
+          <!-- Dorilar jadvali -->
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th><%= t('col_name') %></th>
+                  <th><%= t('col_type') %></th>
+                  <th><%= t('col_price') %></th>
+                  <th><%= t('col_actions') %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% medicines.forEach((med, idx) => { %>
+                  <tr>
+                    <td><%= idx + 1 %></td>
+                    <td style="font-weight: 700;"><%= lang === 'en' ? med.name_en : med.name_uz %></td>
+                    <td style="font-size: 0.85rem; color: var(--text-muted);"><%= lang === 'en' ? med.type_en : med.type_uz %></td>
+                    <td style="font-weight: 700;"><%= med.price.toLocaleString() %> so'm</td>
+                    <td>
+                      <div class="admin-action-row">
+                        <a href="/medicine/<%= med.id %>" class="admin-btn admin-btn-edit" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+                        <a href="/admin/medicine/delete/<%= med.id %>" class="admin-btn admin-btn-delete" onclick="return confirm('<%= lang === 'en' ? 'Are you sure you want to delete?' : 'Rostdan ham o\\'chirmoqchimisiz?' %>')"><%= t('btn_delete') %></a>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      <% } else if (tab === 'diseases') { %>
+        <!-- ========== KASALLIKLAR BOSHQARUVI ========== -->
+        <div class="details-card-block">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 class="block-title" style="margin-bottom: 0; border-bottom: none;"><%= t('admin_tab_dis') %></h2>
+            <button class="login-trigger-btn" onclick="document.getElementById('dis-form-section').style.display = document.getElementById('dis-form-section').style.display === 'none' ? 'block' : 'none';">
+              + <%= t('btn_add_new_dis') %>
+            </button>
+          </div>
+
+          <div id="dis-form-section" style="display: none; margin-bottom: 2rem; background: var(--bg); padding: 1.5rem; border-radius: var(--radius-md);">
+            <h3 style="margin-bottom: 1rem;"><%= t('btn_add_new_dis') %></h3>
+            <form method="POST" action="/admin/disease/save">
+              <input type="hidden" name="id" value="">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group"><label class="form-label">Nomi (UZ)</label><input type="text" name="name_uz" class="form-input" required></div>
+                <div class="form-group"><label class="form-label">Name (EN)</label><input type="text" name="name_en" class="form-input" required></div>
+                <div class="form-group"><label class="form-label">Tavsif (UZ)</label><textarea name="description_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Description (EN)</label><textarea name="description_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Belgilari (UZ)</label><textarea name="symptoms_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Symptoms (EN)</label><textarea name="symptoms_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Sabablari (UZ)</label><textarea name="causes_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Causes (EN)</label><textarea name="causes_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Oldini olish (UZ)</label><textarea name="prevention_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Prevention (EN)</label><textarea name="prevention_en" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Davolash (UZ)</label><textarea name="treatment_uz" class="form-textarea" rows="2" required></textarea></div>
+                <div class="form-group"><label class="form-label">Treatment (EN)</label><textarea name="treatment_en" class="form-textarea" rows="2" required></textarea></div>
+              </div>
+              <button type="submit" class="login-trigger-btn" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                <%= t('btn_save_changes') %>
+              </button>
+            </form>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th><%= t('col_name') %></th>
+                  <th><%= t('col_actions') %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% diseases.forEach((dis, idx) => { %>
+                  <tr>
+                    <td><%= idx + 1 %></td>
+                    <td style="font-weight: 700;"><%= lang === 'en' ? dis.name_en : dis.name_uz %></td>
+                    <td>
+                      <div class="admin-action-row">
+                        <a href="/disease/<%= dis.id %>" class="admin-btn admin-btn-edit" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+                        <a href="/admin/disease/delete/<%= dis.id %>" class="admin-btn admin-btn-delete" onclick="return confirm('<%= lang === 'en' ? 'Are you sure?' : 'Ishonchingiz komilmi?' %>')"><%= t('btn_delete') %></a>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      <% } else if (tab === 'users') { %>
+        <!-- ========== FOYDALANUVCHILAR BOSHQARUVI ========== -->
+        <div class="details-card-block">
+          <h2 class="block-title"><%= t('admin_tab_users') %></h2>
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th><%= t('col_name') %></th>
+                  <th><%= t('lbl_email') %></th>
+                  <th><%= t('col_role') %></th>
+                  <th><%= t('col_joined') %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% users.forEach((u, idx) => { %>
+                  <tr>
+                    <td><%= idx + 1 %></td>
+                    <td style="font-weight: 700;"><%= u.name %></td>
+                    <td style="color: var(--text-muted);"><%= u.email %></td>
+                    <td>
+                      <span style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+                        background: <%= u.role === 'admin' ? 'var(--warning-light)' : 'var(--primary-light)' %>;
+                        color: <%= u.role === 'admin' ? 'var(--warning)' : 'var(--primary)' %>;">
+                        <%= u.role %>
+                      </span>
+                    </td>
+                    <td style="color: var(--text-muted);"><%= u.joinedDate %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('layout/footer') %>

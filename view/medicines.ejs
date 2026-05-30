@@ -1,0 +1,126 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <div class="catalog-layout">
+    <!-- --- SIDEBAR FILTERLARI --- -->
+    <aside class="filter-sidebar">
+      <h3 style="font-size: 1.1rem; margin-bottom: 1.5rem;"><%= t('filter_title') %></h3>
+      
+      <form id="filter-form" method="GET" action="/medicines">
+        <!-- Qidiruv -->
+        <div class="filter-section">
+          <input type="text" name="search" class="form-input" placeholder="<%= t('placeholder_search_med') %>" value="<%= filters.search %>">
+        </div>
+
+        <!-- Kategoriya -->
+        <div class="filter-section">
+          <h4 class="filter-section-title"><%= t('filter_category') %></h4>
+          <div class="filter-group">
+            <label class="filter-option">
+              <input type="radio" name="category" value="all" <%= filters.category === 'all' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_type_all') %>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="category" value="painkillers" <%= filters.category === 'painkillers' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_type_painkillers') %>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="category" value="antibiotics" <%= filters.category === 'antibiotics' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_type_antibiotics') %>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="category" value="cardio" <%= filters.category === 'cardio' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_type_cardio') %>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="category" value="vitamins" <%= filters.category === 'vitamins' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_type_vitamins') %>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="category" value="digestive" <%= filters.category === 'digestive' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_type_digestive') %>
+            </label>
+          </div>
+        </div>
+
+        <!-- Retsept holati -->
+        <div class="filter-section">
+          <h4 class="filter-section-title"><%= t('filter_prescription') %></h4>
+          <div class="filter-group">
+            <label class="filter-option">
+              <input type="radio" name="prescription" value="all" <%= filters.prescription === 'all' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_rx_all') %>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="prescription" value="otc" <%= filters.prescription === 'otc' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_rx_no') %>
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="prescription" value="rx" <%= filters.prescription === 'rx' ? 'checked' : '' %> onchange="this.form.submit()"> <%= t('filter_rx_yes') %>
+            </label>
+          </div>
+        </div>
+
+        <!-- Saralash -->
+        <div class="filter-section">
+          <h4 class="filter-section-title"><%= t('filter_sort') %></h4>
+          <select name="sort" class="sort-select" style="width: 100%;" onchange="this.form.submit()">
+            <option value="popular" <%= filters.sort === 'popular' ? 'selected' : '' %>><%= t('sort_popular') %></option>
+            <option value="price_asc" <%= filters.sort === 'price_asc' ? 'selected' : '' %>><%= t('sort_price_asc') %></option>
+            <option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>><%= t('sort_price_desc') %></option>
+            <option value="rating" <%= filters.sort === 'rating' ? 'selected' : '' %>><%= t('sort_rating') %></option>
+            <option value="alpha" <%= filters.sort === 'alpha' ? 'selected' : '' %>><%= t('sort_alpha') %></option>
+          </select>
+        </div>
+      </form>
+    </aside>
+
+    <!-- --- DORILAR GRIDI --- -->
+    <div class="catalog-main">
+      <div class="catalog-toolbar">
+        <h1 class="catalog-title"><%= t('nav_medicines') %></h1>
+        <span style="color: var(--text-muted); font-weight: 600;"><%= medicines.length %> <%= t('found_items') %></span>
+      </div>
+
+      <% if (medicines.length === 0) { %>
+        <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.3; margin-bottom: 1rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <p style="font-size: 1.1rem; font-weight: 600;"><%= lang === 'en' ? 'No medicines found matching your filters.' : "Filtrlarga mos dori topilmadi." %></p>
+        </div>
+      <% } else { %>
+        <div class="medicine-grid">
+          <% medicines.forEach(med => { %>
+            <div class="medicine-card">
+              <span class="card-header-badge <%= med.prescription ? 'badge-rx' : 'badge-otc' %>">
+                <%= med.prescription ? t('card_rx_yes') : t('card_rx_no') %>
+              </span>
+              <button class="card-favorite-btn <%= med.isFavorite ? 'active' : '' %>" data-id="<%= med.id %>" data-type="medicine">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="<%= med.isFavorite ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </button>
+              <div class="card-image-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+              </div>
+              <div class="card-body">
+                <div class="card-type"><%= lang === 'en' ? med.type_en : med.type_uz %></div>
+                <h3 class="card-name"><%= lang === 'en' ? med.name_en : med.name_uz %></h3>
+                <p class="card-desc"><%= lang === 'en' ? med.description_en : med.description_uz %></p>
+                <div class="card-rating">
+                  <% for (let i = 0; i < 5; i++) { %>
+                    <% if (i < Math.round(med.rating)) { %>★<% } else { %>☆<% } %>
+                  <% } %>
+                  <span style="color: var(--text-muted); margin-left: 4px;"><%= med.rating %></span>
+                </div>
+                <div class="card-footer">
+                  <div>
+                    <div class="card-price-label"><%= t('card_price_from') %></div>
+                    <div class="card-price"><%= med.price.toLocaleString() %> so'm</div>
+                  </div>
+                  <div style="display: flex; gap: 0.4rem;">
+                    <button class="card-compare-btn admin-btn admin-btn-edit" data-id="<%= med.id %>" title="<%= t('add_to_compare') %>">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    </button>
+                    <a href="/medicine/<%= med.id %>" class="card-action-btn" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('layout/footer') %>

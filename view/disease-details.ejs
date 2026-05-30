@@ -1,0 +1,77 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <!-- --- KASALLIK BATAFSIL HEADER --- -->
+  <div class="details-header" style="grid-template-columns: 1fr;">
+    <div class="details-info">
+      <div class="details-type-row">
+        <span class="details-type"><%= lang === 'en' ? 'Disease Information' : "Kasallik ma'lumotlari" %></span>
+      </div>
+      <h1 class="details-title"><%= lang === 'en' ? dis.name_en : dis.name_uz %></h1>
+
+      <div class="details-meta-row">
+        <div class="meta-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span class="highlight"><%= dis.views.toLocaleString() %></span> <%= lang === 'en' ? 'views' : "ko'rishlar" %>
+        </div>
+      </div>
+
+      <p class="details-desc"><%= lang === 'en' ? dis.description_en : dis.description_uz %></p>
+
+      <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+        <button class="details-btn details-btn-primary details-fav-btn <%= isFav ? 'active' : '' %>" data-id="<%= dis.id %>" data-type="disease">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="<%= isFav ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <span><%= isFav ? t('btn_remove_favorite') : t('btn_add_favorite') %></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-grid">
+    <div>
+      <!-- Belgilari (Simptomlar) -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('symptoms') %></h2>
+        <p class="block-text"><%= lang === 'en' ? dis.symptoms_en : dis.symptoms_uz %></p>
+      </div>
+
+      <!-- Sabablari -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('causes') %></h2>
+        <p class="block-text"><%= lang === 'en' ? dis.causes_en : dis.causes_uz %></p>
+      </div>
+
+      <!-- Oldini olish -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('prevention') %></h2>
+        <p class="block-text"><%= lang === 'en' ? dis.prevention_en : dis.prevention_uz %></p>
+      </div>
+
+      <!-- Davolash -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('treatment') %></h2>
+        <p class="block-text"><%= lang === 'en' ? dis.treatment_en : dis.treatment_uz %></p>
+      </div>
+    </div>
+
+    <!-- --- TAVSIYA ETILADIGAN DORILAR --- -->
+    <div>
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('recommended_medicines') %></h2>
+        <% if (recommendedMeds.length === 0) { %>
+          <p class="block-text" style="text-align: center; padding: 1rem;"><%= lang === 'en' ? 'No recommended medicines.' : "Tavsiya etiladigan dorilar mavjud emas." %></p>
+        <% } else { %>
+          <% recommendedMeds.forEach(med => { %>
+            <a href="/medicine/<%= med.id %>" style="display: block; text-decoration: none; padding: 1rem; border-bottom: 1px solid var(--surface-border); transition: var(--transition-fast);" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
+              <div style="font-weight: 700; color: var(--text); margin-bottom: 0.3rem;"><%= lang === 'en' ? med.name_en : med.name_uz %></div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);"><%= lang === 'en' ? med.type_en : med.type_uz %></div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-top: 0.3rem;"><%= med.price.toLocaleString() %> so'm</div>
+            </a>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('layout/footer') %>

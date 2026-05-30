@@ -1,0 +1,69 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <div class="catalog-toolbar" style="margin-bottom: 2rem;">
+    <h1 class="catalog-title"><%= t('nav_favorites') %></h1>
+  </div>
+
+  <!-- Dori Sevimlilari -->
+  <h2 style="font-size: 1.2rem; margin-bottom: 1rem; border-left: 3px solid var(--primary); padding-left: 0.75rem;"><%= t('fav_med_tab') %></h2>
+  <% if (favMedicines.length === 0) { %>
+    <div style="text-align: center; padding: 2rem; color: var(--text-muted); background: var(--surface); border-radius: var(--radius-md); margin-bottom: 2rem; border: 1px solid var(--surface-border);">
+      <p style="font-weight: 600;"><%= t('fav_empty') %></p>
+    </div>
+  <% } else { %>
+    <div class="medicine-grid" style="margin-bottom: 2rem;">
+      <% favMedicines.forEach(med => { %>
+        <div class="medicine-card">
+          <span class="card-header-badge <%= med.prescription ? 'badge-rx' : 'badge-otc' %>">
+            <%= med.prescription ? t('card_rx_yes') : t('card_rx_no') %>
+          </span>
+          <button class="card-favorite-btn active" data-id="<%= med.id %>" data-type="medicine">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <div class="card-image-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          </div>
+          <div class="card-body">
+            <div class="card-type"><%= lang === 'en' ? med.type_en : med.type_uz %></div>
+            <h3 class="card-name"><%= lang === 'en' ? med.name_en : med.name_uz %></h3>
+            <p class="card-desc"><%= lang === 'en' ? med.description_en : med.description_uz %></p>
+            <div class="card-footer">
+              <div>
+                <div class="card-price-label"><%= t('card_price_from') %></div>
+                <div class="card-price"><%= med.price.toLocaleString() %> so'm</div>
+              </div>
+              <a href="/medicine/<%= med.id %>" class="card-action-btn" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Kasallik Sevimlilari -->
+  <h2 style="font-size: 1.2rem; margin-bottom: 1rem; border-left: 3px solid var(--info); padding-left: 0.75rem;"><%= t('fav_dis_tab') %></h2>
+  <% if (favDiseases.length === 0) { %>
+    <div style="text-align: center; padding: 2rem; color: var(--text-muted); background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--surface-border);">
+      <p style="font-weight: 600;"><%= t('fav_empty') %></p>
+    </div>
+  <% } else { %>
+    <div class="disease-grid">
+      <% favDiseases.forEach(dis => { %>
+        <div class="disease-card">
+          <button class="card-favorite-btn active" data-id="<%= dis.id %>" data-type="disease">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <h3 class="dis-card-name"><%= lang === 'en' ? dis.name_en : dis.name_uz %></h3>
+          <p class="dis-card-desc"><%= lang === 'en' ? dis.description_en : dis.description_uz %></p>
+          <div class="dis-card-footer">
+            <span class="recommended-count"><%= dis.views %> <%= lang === 'en' ? 'views' : "ko'rishlar" %></span>
+            <a href="/disease/<%= dis.id %>" class="card-action-btn" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('layout/footer') %>

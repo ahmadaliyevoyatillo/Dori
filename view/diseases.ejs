@@ -1,0 +1,45 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <div class="catalog-toolbar" style="margin-bottom: 1.5rem;">
+    <h1 class="catalog-title"><%= t('nav_diseases') %></h1>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <form method="GET" action="/diseases" style="display: flex; gap: 0.5rem;">
+        <input type="text" name="search" class="form-input" style="max-width: 300px;" value="<%= searchVal %>" placeholder="<%= t('placeholder_search_dis') %>">
+        <button type="submit" class="card-action-btn"><%= t('btn_search') %></button>
+      </form>
+      <span style="color: var(--text-muted); font-weight: 600;"><%= diseases.length %> <%= t('found_items') %></span>
+    </div>
+  </div>
+
+  <% if (diseases.length === 0) { %>
+    <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.3; margin-bottom: 1rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <p style="font-size: 1.1rem; font-weight: 600;"><%= lang === 'en' ? 'No diseases found.' : "Kasallik topilmadi." %></p>
+    </div>
+  <% } else { %>
+    <div class="disease-grid">
+      <% diseases.forEach(dis => { %>
+        <div class="disease-card">
+          <button class="card-favorite-btn <%= dis.isFavorite ? 'active' : '' %>" data-id="<%= dis.id %>" data-type="disease">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="<%= dis.isFavorite ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <h3 class="dis-card-name"><%= lang === 'en' ? dis.name_en : dis.name_uz %></h3>
+          <p class="dis-card-desc"><%= lang === 'en' ? dis.description_en : dis.description_uz %></p>
+          <div class="symptoms-preview">
+            <div class="symptoms-preview-title"><%= t('symptoms') %></div>
+            <p class="symptoms-preview-text"><%= lang === 'en' ? dis.symptoms_en : dis.symptoms_uz %></p>
+          </div>
+          <div class="dis-card-footer">
+            <span class="recommended-count">
+              <%= dis.recommendedCount %> <%= lang === 'en' ? 'recommended medicines' : "tavsiya etilgan dori" %>
+            </span>
+            <a href="/disease/<%= dis.id %>" class="card-action-btn" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('layout/footer') %>

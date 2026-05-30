@@ -1,0 +1,157 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <!-- --- DORI BATAFSIL HEADER --- -->
+  <div class="details-header">
+    <div class="details-image-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+    </div>
+    <div class="details-info">
+      <div class="details-type-row">
+        <span class="details-type"><%= lang === 'en' ? med.type_en : med.type_uz %></span>
+        <span class="card-header-badge <%= med.prescription ? 'badge-rx' : 'badge-otc' %>" style="position: static;">
+          <%= med.prescription ? t('card_rx_yes') : t('card_rx_no') %>
+        </span>
+      </div>
+      <h1 class="details-title"><%= lang === 'en' ? med.name_en : med.name_uz %></h1>
+      
+      <div class="details-meta-row">
+        <div class="meta-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          <span><%= t('manufacturer') %>:</span>
+          <span class="highlight"><%= lang === 'en' ? med.manufacturer_en : med.manufacturer_uz %></span>
+        </div>
+        <div class="meta-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span class="highlight"><%= med.views.toLocaleString() %></span> <%= lang === 'en' ? 'views' : "ko'rishlar" %>
+        </div>
+        <div class="meta-item" style="color: var(--warning);">
+          <% for (let i = 0; i < 5; i++) { %>
+            <% if (i < Math.round(med.rating)) { %>★<% } else { %>☆<% } %>
+          <% } %>
+          <span style="margin-left: 4px;"><%= med.rating %></span>
+        </div>
+      </div>
+
+      <p class="details-desc"><%= lang === 'en' ? med.description_en : med.description_uz %></p>
+
+      <div class="details-price-row">
+        <div class="details-price"><%= med.price.toLocaleString() %> so'm</div>
+        <div class="details-actions">
+          <button class="details-btn details-btn-primary details-fav-btn <%= isFav ? 'active' : '' %>" data-id="<%= med.id %>" data-type="medicine">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="<%= isFav ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span><%= isFav ? t('btn_remove_favorite') : t('btn_add_favorite') %></span>
+          </button>
+          <button class="details-btn details-btn-secondary details-comp-btn" data-id="<%= med.id %>">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <span><%= t('add_to_compare') %></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- BATAFSIL MA'LUMOT BLOKLAR --- -->
+  <div class="details-grid">
+    <div>
+      <!-- Qo'llash ko'rsatmalari -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('usage_instructions') %></h2>
+        <p class="block-text"><%= lang === 'en' ? med.usage_en : med.usage_uz %></p>
+      </div>
+
+      <!-- Dozalash -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('dosage_info') %></h2>
+        <p class="block-text"><%= lang === 'en' ? med.dosage_en : med.dosage_uz %></p>
+      </div>
+
+      <!-- Nojo'ya ta'sirlari -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('side_effects') %></h2>
+        <p class="block-text"><%= lang === 'en' ? med.sideEffects_en : med.sideEffects_uz %></p>
+      </div>
+
+      <!-- Ogohlantirishlar -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('warnings') %></h2>
+        <p class="block-text"><%= lang === 'en' ? med.warnings_en : med.warnings_uz %></p>
+      </div>
+
+      <!-- --- SHARHLAR BO'LIMI --- -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('reviews_title') %> (<%= reviews.length %>)</h2>
+        
+        <% if (reviews.length === 0) { %>
+          <p class="block-text" style="text-align: center; padding: 1.5rem 0;"><%= t('reviews_empty') %></p>
+        <% } else { %>
+          <% reviews.forEach(rev => { %>
+            <div class="review-item">
+              <div class="review-meta">
+                <div class="review-user-row">
+                  <div class="avatar-circle" style="width: 30px; height: 30px; font-size: 0.8rem;"><%= rev.username.charAt(0).toUpperCase() %></div>
+                  <span class="review-username"><%= rev.username %></span>
+                  <span class="review-stars">
+                    <% for (let i = 0; i < 5; i++) { %>
+                      <% if (i < rev.rating) { %>★<% } else { %>☆<% } %>
+                    <% } %>
+                  </span>
+                </div>
+                <span class="review-date"><%= rev.date %></span>
+              </div>
+              <p class="review-comment"><%= rev.comment %></p>
+            </div>
+          <% }) %>
+        <% } %>
+
+        <!-- Sharh qo'shish formasi -->
+        <div class="add-review-form">
+          <h3 style="font-size: 1rem; margin-bottom: 1rem;"><%= t('review_add_title') %></h3>
+          <form id="med-review-form" action="/medicine/<%= med.id %>/review">
+            <div class="form-group">
+              <label class="form-label"><%= t('review_label_name') %></label>
+              <input type="text" class="form-input" id="rev-username" required placeholder="<%= lang === 'en' ? 'Your name' : 'Ismingiz' %>">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><%= t('review_label_stars') %></label>
+              <div class="rating-select-group" id="rev-rating-group">
+                <span class="rating-star-label active" data-val="1">★</span>
+                <span class="rating-star-label active" data-val="2">★</span>
+                <span class="rating-star-label active" data-val="3">★</span>
+                <span class="rating-star-label active" data-val="4">★</span>
+                <span class="rating-star-label active" data-val="5">★</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><%= t('review_label_comment') %></label>
+              <textarea class="form-textarea" id="rev-comment" rows="3" required placeholder="<%= lang === 'en' ? 'Write your review...' : 'Fikringizni yozing...' %>"></textarea>
+            </div>
+            <button type="submit" class="login-trigger-btn" style="width: 100%; justify-content: center;">
+              <%= t('btn_submit_review') %>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- --- O'XSHASH DORILAR (Sidebar) --- -->
+    <div>
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('similar_medicines') %></h2>
+        <% if (similar.length === 0) { %>
+          <p class="block-text" style="text-align: center; padding: 1rem;"><%= lang === 'en' ? 'No similar medicines found.' : "O'xshash dorilar topilmadi." %></p>
+        <% } else { %>
+          <% similar.forEach(s => { %>
+            <a href="/medicine/<%= s.id %>" style="display: block; text-decoration: none; padding: 1rem; border-bottom: 1px solid var(--surface-border); transition: var(--transition-fast);" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
+              <div style="font-weight: 700; color: var(--text); margin-bottom: 0.3rem;"><%= lang === 'en' ? s.name_en : s.name_uz %></div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);"><%= lang === 'en' ? s.type_en : s.type_uz %></div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-top: 0.3rem;"><%= s.price.toLocaleString() %> so'm</div>
+            </a>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('layout/footer') %>

@@ -1,0 +1,102 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <div class="catalog-toolbar" style="margin-bottom: 2rem;">
+    <h1 class="catalog-title"><%= t('compare_title') %></h1>
+    <% if (compareMedicines.length > 0) { %>
+      <button class="details-btn details-btn-secondary" id="compare-clear-page-btn" onclick="clearAndReload()"><%= t('btn_clear') %></button>
+    <% } %>
+  </div>
+
+  <% if (compareMedicines.length === 0) { %>
+    <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted); background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--surface-border);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.3; margin-bottom: 1rem;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      <p style="font-size: 1.1rem; font-weight: 600;"><%= t('compare_empty') %></p>
+      <a href="/medicines" class="login-trigger-btn" style="display: inline-flex; margin-top: 1.5rem; text-decoration: none;"><%= t('nav_medicines') %> →</a>
+    </div>
+  <% } else { %>
+    <div style="overflow-x: auto;">
+      <table class="compare-matrix-table">
+        <thead>
+          <tr>
+            <th style="min-width: 200px;"><%= t('filter_title') %></th>
+            <% compareMedicines.forEach(med => { %>
+              <th style="min-width: 250px;">
+                <a href="/medicine/<%= med.id %>" style="color: var(--primary); text-decoration: none; font-weight: 800;"><%= lang === 'en' ? med.name_en : med.name_uz %></a>
+              </th>
+            <% }) %>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Turi -->
+          <tr>
+            <td class="attribute-name"><%= t('attr_type') %></td>
+            <% compareMedicines.forEach(med => { %>
+              <td><%= lang === 'en' ? med.type_en : med.type_uz %></td>
+            <% }) %>
+          </tr>
+          <!-- Narxi -->
+          <tr>
+            <td class="attribute-name"><%= t('attr_price') %></td>
+            <% compareMedicines.forEach(med => { %>
+              <td style="font-weight: 700;"><%= med.price.toLocaleString() %> so'm</td>
+            <% }) %>
+          </tr>
+          <!-- Retsept -->
+          <tr>
+            <td class="attribute-name"><%= t('attr_prescription') %></td>
+            <% compareMedicines.forEach(med => { %>
+              <td>
+                <span class="card-header-badge <%= med.prescription ? 'badge-rx' : 'badge-otc' %>" style="position: static;">
+                  <%= med.prescription ? t('card_rx_yes') : t('card_rx_no') %>
+                </span>
+              </td>
+            <% }) %>
+          </tr>
+          <!-- Reyting -->
+          <tr>
+            <td class="attribute-name"><%= t('attr_rating') %></td>
+            <% compareMedicines.forEach(med => { %>
+              <td style="color: var(--warning); font-weight: 700;">
+                <% for (let i = 0; i < 5; i++) { %>
+                  <% if (i < Math.round(med.rating)) { %>★<% } else { %>☆<% } %>
+                <% } %>
+                <%= med.rating %>
+              </td>
+            <% }) %>
+          </tr>
+          <!-- Ishlab chiqaruvchi -->
+          <tr>
+            <td class="attribute-name"><%= t('attr_manufacturer') %></td>
+            <% compareMedicines.forEach(med => { %>
+              <td><%= lang === 'en' ? med.manufacturer_en : med.manufacturer_uz %></td>
+            <% }) %>
+          </tr>
+          <!-- Dozalash -->
+          <tr>
+            <td class="attribute-name"><%= t('attr_dosage') %></td>
+            <% compareMedicines.forEach(med => { %>
+              <td><%= lang === 'en' ? med.dosage_en : med.dosage_uz %></td>
+            <% }) %>
+          </tr>
+          <!-- Nojo'ya ta'sirlari -->
+          <tr>
+            <td class="attribute-name"><%= t('attr_side_effects') %></td>
+            <% compareMedicines.forEach(med => { %>
+              <td style="font-size: 0.85rem;"><%= lang === 'en' ? med.sideEffects_en : med.sideEffects_uz %></td>
+            <% }) %>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  async function clearAndReload() {
+    await fetch('/compare/clear', { method: 'POST' });
+    window.location.reload();
+  }
+</script>
+
+<%- include('layout/footer') %>

@@ -1,0 +1,90 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <div class="catalog-toolbar" style="margin-bottom: 2rem;">
+    <h1 class="catalog-title"><%= t('profile_title') %></h1>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem;">
+    <!-- Profil Sidebar -->
+    <div class="details-card-block" style="height: fit-content;">
+      <div style="text-align: center; padding: 1rem 0;">
+        <div class="avatar-circle" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 1rem;"><%= user.name.charAt(0).toUpperCase() %></div>
+        <h2 style="font-size: 1.3rem; margin-bottom: 0.3rem;"><%= user.name %></h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem;"><%= user.email %></p>
+        <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);"><%= t('profile_joined') %></div>
+            <div style="font-weight: 700; font-size: 0.9rem;"><%= user.joinedDate %></div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);"><%= t('profile_role') %></div>
+            <div style="font-weight: 700; font-size: 0.9rem; text-transform: capitalize; color: <%= user.role === 'admin' ? 'var(--warning)' : 'var(--primary)' %>;"><%= user.role %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profil Formasi va Tarix -->
+    <div>
+      <!-- Shaxsiy ma'lumotlar -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('profile_tab_info') %></h2>
+        
+        <% if (typeof locals !== 'undefined') { %>
+          <% const urlParams = typeof req !== 'undefined' ? {} : {}; %>
+        <% } %>
+
+        <form method="POST" action="/profile/update">
+          <div class="form-group">
+            <label class="form-label"><%= t('lbl_fullname') %></label>
+            <input type="text" name="name" class="form-input" value="<%= user.name %>" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><%= t('lbl_email') %></label>
+            <input type="email" class="form-input" value="<%= user.email %>" disabled style="opacity: 0.6; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label"><%= t('lbl_new_password') %></label>
+            <input type="password" name="password" class="form-input" placeholder="<%= lang === 'en' ? 'Leave empty to keep current' : 'Joriy parolni saqlash uchun bo\\'sh qoldiring' %>" minlength="6">
+          </div>
+          <button type="submit" class="login-trigger-btn" style="width: 100%; justify-content: center;">
+            <%= t('btn_save_changes') %>
+          </button>
+        </form>
+      </div>
+
+      <!-- Tarix -->
+      <div class="details-card-block">
+        <h2 class="block-title"><%= t('profile_tab_history') %></h2>
+
+        <!-- Qidiruv tarixi -->
+        <h3 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-muted);"><%= t('recent_searches') %></h3>
+        <% if (history.length === 0) { %>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;"><%= lang === 'en' ? 'No search history.' : "Qidiruv tarixi bo'sh." %></p>
+        <% } else { %>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+            <% history.forEach(q => { %>
+              <span style="background: var(--primary-light); color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;"><%= q %></span>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <!-- Oxirgi ko'rilganlar -->
+        <h3 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-muted);"><%= t('recently_viewed') %></h3>
+        <% if (viewed.length === 0) { %>
+          <p style="font-size: 0.85rem; color: var(--text-muted);"><%= lang === 'en' ? 'No recently viewed items.' : "Oxirgi ko'rilgan elementlar yo'q." %></p>
+        <% } else { %>
+          <% viewed.forEach(item => { %>
+            <a href="/<%= item.type %>/<%= item.id %>" style="display: block; text-decoration: none; padding: 0.6rem 0; border-bottom: 1px solid var(--surface-border); color: var(--text); font-weight: 600; font-size: 0.9rem;">
+              <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; margin-right: 0.5rem;"><%= item.type %></span>
+              <%= lang === 'en' ? item.name_en : item.name_uz %>
+            </a>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('layout/footer') %>

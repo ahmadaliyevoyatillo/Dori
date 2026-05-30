@@ -1,0 +1,169 @@
+<%- include('layout/header') %>
+
+<div class="page-view">
+  <!-- --- HERO BO'LIMI --- -->
+  <section class="hero-section">
+    <div class="hero-glow-1"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        <span><%= t('hero_badge') %></span>
+      </div>
+      <h1 class="hero-title">
+        <%= t('hero_title_1') %> <br>
+        <span><%= t('hero_title_2') %></span> <br>
+        <%= t('hero_title_3') %>
+      </h1>
+      <p class="hero-subtitle"><%= t('hero_subtitle') %></p>
+    </div>
+
+    <!-- Katta markaziy qidiruv -->
+    <div class="search-center">
+      <div class="search-tabs">
+        <button class="search-tab-btn active" onclick="setSearchType('medicine')"><%= t('tab_search_med') %></button>
+        <button class="search-tab-btn" onclick="setSearchType('disease')"><%= t('tab_search_dis') %></button>
+      </div>
+      <form class="search-input-group" id="hero-search-form" action="/medicines" method="GET">
+        <svg class="search-group-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" name="search" class="search-main-input" id="hero-search-input" placeholder="<%= t('placeholder_search_med') %>">
+        <button type="submit" class="search-submit-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span><%= t('btn_search') %></span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- --- STATISTIKALAR GRIDI --- -->
+  <section class="stats-grid" style="margin-bottom: 3rem;">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-number"><%= medsCount %></div>
+        <div class="stat-label"><%= t('stat_medicines') %></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--info-light); color: var(--info);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-number"><%= disCount %></div>
+        <div class="stat-label"><%= t('stat_diseases') %></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-number"><%= searchesCount.toLocaleString() %></div>
+        <div class="stat-label"><%= t('stat_searches') %></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--danger-light); color: var(--danger);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-number"><%= medsCount * 2 %></div>
+        <div class="stat-label"><%= t('stat_comparisons') %></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- --- MASHHUR DORILAR --- -->
+  <section style="margin-bottom: 3rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.5rem;"><%= t('section_trending_medicines') %></h2>
+      <a href="/medicines" class="card-action-btn" style="text-decoration: none; padding: 0.6rem 1.2rem;"><%= t('btn_view_all') %> →</a>
+    </div>
+    <div class="medicine-grid">
+      <% trendingMeds.forEach(med => { %>
+        <div class="medicine-card">
+          <span class="card-header-badge <%= med.prescription ? 'badge-rx' : 'badge-otc' %>">
+            <%= med.prescription ? t('card_rx_yes') : t('card_rx_no') %>
+          </span>
+          <button class="card-favorite-btn <%= med.isFavorite ? 'active' : '' %>" data-id="<%= med.id %>" data-type="medicine">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="<%= med.isFavorite ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <div class="card-image-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          </div>
+          <div class="card-body">
+            <div class="card-type"><%= lang === 'en' ? med.type_en : med.type_uz %></div>
+            <h3 class="card-name"><%= lang === 'en' ? med.name_en : med.name_uz %></h3>
+            <p class="card-desc"><%= lang === 'en' ? med.description_en : med.description_uz %></p>
+            <div class="card-rating">
+              <% for (let i = 0; i < 5; i++) { %>
+                <% if (i < Math.round(med.rating)) { %>★<% } else { %>☆<% } %>
+              <% } %>
+              <span style="color: var(--text-muted); margin-left: 4px;"><%= med.rating %></span>
+            </div>
+            <div class="card-footer">
+              <div>
+                <div class="card-price-label"><%= t('card_price_from') %></div>
+                <div class="card-price"><%= med.price.toLocaleString() %> so'm</div>
+              </div>
+              <a href="/medicine/<%= med.id %>" class="card-action-btn" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- --- MASHHUR KASALLIKLAR --- -->
+  <section style="margin-bottom: 3rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.5rem;"><%= t('section_popular_diseases') %></h2>
+      <a href="/diseases" class="card-action-btn" style="text-decoration: none; padding: 0.6rem 1.2rem;"><%= t('btn_view_all') %> →</a>
+    </div>
+    <div class="disease-grid">
+      <% popularDiseases.forEach(dis => { %>
+        <div class="disease-card">
+          <button class="card-favorite-btn <%= dis.isFavorite ? 'active' : '' %>" data-id="<%= dis.id %>" data-type="disease">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="<%= dis.isFavorite ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <h3 class="dis-card-name"><%= lang === 'en' ? dis.name_en : dis.name_uz %></h3>
+          <p class="dis-card-desc"><%= lang === 'en' ? dis.description_en : dis.description_uz %></p>
+          <div class="symptoms-preview">
+            <div class="symptoms-preview-title"><%= t('symptoms') %></div>
+            <p class="symptoms-preview-text"><%= lang === 'en' ? dis.symptoms_en : dis.symptoms_uz %></p>
+          </div>
+          <div class="dis-card-footer">
+            <span class="recommended-count">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              <%= dis.views %> <%= lang === 'en' ? 'views' : "ko'rishlar" %>
+            </span>
+            <a href="/disease/<%= dis.id %>" class="card-action-btn" style="text-decoration:none;"><%= t('card_btn_more') %></a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<script>
+  let currentSearchType = 'medicine';
+  function setSearchType(type) {
+    currentSearchType = type;
+    const form = document.getElementById('hero-search-form');
+    const input = document.getElementById('hero-search-input');
+    const tabs = document.querySelectorAll('.search-tab-btn');
+    tabs.forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && type === 'medicine') || (i === 1 && type === 'disease'));
+    });
+    if (type === 'medicine') {
+      form.action = '/medicines';
+      input.placeholder = '<%= t("placeholder_search_med") %>';
+    } else {
+      form.action = '/diseases';
+      input.placeholder = '<%= t("placeholder_search_dis") %>';
+    }
+  }
+</script>
+
+<%- include('layout/footer') %>
