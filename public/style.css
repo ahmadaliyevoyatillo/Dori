@@ -97,7 +97,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
@@ -1802,4 +1801,82 @@ body.dark .card-favorite-btn {
   .compare-drawer-item {
     max-width: none;
   }
+}
+/* --- RESPONSIVE TUZATISHLAR --- */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+    overflow: visible !important;
+  }
+
+  .hero-section {
+    padding: 2rem 1rem;
+    overflow: visible !important;
+  }
+
+  .hero-glow-1 {
+    display: none; /* Mobilda ortiqcha */
+  }
+
+  .page-view {
+    overflow: visible !important;
+  }
+
+  .search-center {
+    padding: 1rem;
+  }
+
+  .search-tabs {
+    flex-wrap: wrap;
+  }
+
+  .search-tab-btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.9rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .medicine-grid, .disease-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .details-header {
+    grid-template-columns: 1fr;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.hero-section {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: linear-gradient(180deg, var(--primary-light) 0%, transparent 100%);
+  border-radius: var(--radius-lg);
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.hero-glow-1 {
+  position: absolute;
+  top: 0;
+  left: 0;        /* -10% o'rniga 0 */
+  width: 300px;   /* kichraytiring */
+  height: 300px;
+  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.navbar-wrapper,
+.main-content {
+  overflow-x: hidden;
 }

@@ -1,4 +1,4 @@
-// middleware/auth.js - Sessiyalarni tekshirish va contextni EJS-ga ulash
+// middleware/auth.js
 
 const TRANSLATIONS = {
   uz: {
@@ -110,34 +110,34 @@ const TRANSLATIONS = {
 };
 
 module.exports = {
-  TRANSLATIONS, // Boshqa joylarda ham ishlatish uchun
-  
+  TRANSLATIONS,
+
   setUserContext: (req, res, next) => {
     res.locals.user = req.session.user || null;
     res.locals.lang = req.cookies.lang || 'uz';
     res.locals.theme = req.cookies.theme || 'light';
-    
-    // EJS tarjima yordamchisi
     res.locals.t = (key) => {
       const lang = res.locals.lang;
       return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || key;
     };
     next();
   },
-  
+
   requireLogin: (req, res, next) => {
     if (!req.session.user) {
-      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      const acceptsJson = req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1);
+      if (acceptsJson) {
         return res.status(401).json({ error: "Avtorizatsiyadan o'ting!" });
       }
       return res.redirect('/?login_required=true');
     }
     next();
   },
-  
+
   requireAdmin: (req, res, next) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
-      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      const acceptsJson = req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1);
+      if (acceptsJson) {
         return res.status(403).json({ error: "Ruxsat etilmagan!" });
       }
       return res.status(403).render('404', { title: "Ruxsat etilmagan" });
