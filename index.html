@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <script>
+    if (window.location.protocol === 'file:') {
+      window.location.replace('http://localhost:3000/');
+    }
+  </script>
 
   <!-- --- NAVBAR SHELLI --- -->
   <header class="navbar-wrapper">

@@ -104,4 +104,14 @@ app.use((req, res) => {
 // --- 6. SERVERNI ISHGA TUSHIRISH ---
 app.listen(PORT, () => {
   console.log(`Dori.uz serveri ko'tarildi: http://localhost:${PORT}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    const newPort = Number(PORT) + 1;
+    console.log(`Port ${PORT} in use, switching to ${newPort}`);
+    app.listen(newPort, () => {
+      console.log(`Dori.uz serveri ko'tarildi: http://localhost:${newPort}`);
+    });
+  } else {
+    console.error('Server error:', err);
+  }
 });
