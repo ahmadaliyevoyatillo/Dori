@@ -80,13 +80,13 @@ class Medicine {
         // Tahrirlash (Update)
         db.run(`
           UPDATE medicines SET
-            name_uz = ?, name_en = ?, type_uz = ?, type_en = ?, category = ?, price = ?,
+            image = ?, name_uz = ?, name_en = ?, type_uz = ?, type_en = ?, category = ?, price = ?,
             manufacturer_uz = ?, manufacturer_en = ?, description_uz = ?, description_en = ?,
             usage_uz = ?, usage_en = ?, dosage_uz = ?, dosage_en = ?, sideEffects_uz = ?, sideEffects_en = ?,
             warnings_uz = ?, warnings_en = ?, prescription = ?
           WHERE id = ?
         `, [
-          m.name_uz, m.name_en, m.type_uz, m.type_en, m.category, m.price,
+          m.image || 'medicine-placeholder.svg', m.name_uz, m.name_en, m.type_uz, m.type_en, m.category, m.price,
           m.manufacturer_uz, m.manufacturer_en, m.description_uz, m.description_en,
           m.usage_uz, m.usage_en, m.dosage_uz, m.dosage_en, m.sideEffects_uz, m.sideEffects_en,
           m.warnings_uz, m.warnings_en, m.prescription ? 1 : 0, m.id
@@ -101,13 +101,13 @@ class Medicine {
         
         db.run(`
           INSERT INTO medicines (
-            id, name_uz, name_en, type_uz, type_en, category, price,
+            id, image, name_uz, name_en, type_uz, type_en, category, price,
             manufacturer_uz, manufacturer_en, description_uz, description_en,
             usage_uz, usage_en, dosage_uz, dosage_en, sideEffects_uz, sideEffects_en,
             warnings_uz, warnings_en, prescription, views, rating, createdDate
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 5.0, ?)
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 5.0, ?)
         `, [
-          newId, m.name_uz, m.name_en, m.type_uz, m.type_en, m.category, m.price,
+          newId, m.image || 'medicine-placeholder.svg', m.name_uz, m.name_en, m.type_uz, m.type_en, m.category, m.price,
           m.manufacturer_uz, m.manufacturer_en, m.description_uz, m.description_en,
           m.usage_uz, m.usage_en, m.dosage_uz, m.dosage_en, m.sideEffects_uz, m.sideEffects_en,
           m.warnings_uz, m.warnings_en, m.prescription ? 1 : 0, today

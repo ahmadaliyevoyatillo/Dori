@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="220" rx="28" fill="url(#g)"/>
+  <circle cx="250" cy="48" r="46" fill="rgba(255,255,255,0.18)"/>
+  <rect x="64" y="52" width="192" height="116" rx="24" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.35)"/>
+  <path d="M126 88h68M160 54v68" stroke="white" stroke-width="10" stroke-linecap="round"/>
+  <text x="160" y="184" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="white" font-weight="700">Medicine image</text>
+</svg>

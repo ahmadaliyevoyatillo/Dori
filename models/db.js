@@ -30,6 +30,7 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS medicines (
       id TEXT PRIMARY KEY,
+      image TEXT DEFAULT 'medicine-placeholder.svg',
       name_uz TEXT NOT NULL,
       name_en TEXT NOT NULL,
       type_uz TEXT NOT NULL,
@@ -54,6 +55,37 @@ db.serialize(() => {
       createdDate TEXT NOT NULL
     )
   `);
+
+  // 2a. Mavjud bazaga image ustunini qo'shish (migratsiya)
+  db.all("PRAGMA table_info(medicines)", (err, cols) => {
+    if (!err && !cols.some((col) => col.name === 'image')) {
+      db.run("ALTER TABLE medicines ADD COLUMN image TEXT DEFAULT 'medicine-placeholder.svg'");
+      console.log("Migratsiya: medicines jadvaliga image ustuni qo'shildi.");
+    }
+  });
+
+  db.all("SELECT id FROM medicines", (err, rows) => {
+    if (!err && rows && rows.length > 0) {
+      const fallbackMap = {
+        'med-1': 'med-1.svg',
+        'med-2': 'med-2.svg',
+        'med-3': 'med-3.svg',
+        'med-4': 'med-4.svg',
+        'med-5': 'med-5.svg',
+        'med-6': 'med-6.svg',
+        'med-7': 'med-7.svg',
+        'med-8': 'med-8.svg'
+      };
+
+      const updates = rows
+        .map((row) => `WHEN '${row.id}' THEN '${fallbackMap[row.id] || 'medicine-placeholder.svg'}'`)
+        .join(' ');
+
+      if (updates) {
+        db.run(`UPDATE medicines SET image = CASE id ${updates} ELSE image END`);
+      }
+    }
+  });
 
   // 3. Kasalliklar jadvali
   db.run(`
@@ -158,6 +190,7 @@ db.serialize(() => {
       const initialMeds = [
         {
           id: "med-1",
+          image: "med-1.svg",
           name_uz: "Paratsetamol", name_en: "Paracetamol",
           type_uz: "Og'riq qoldiruvchi / Isitma tushiruvchi", type_en: "Analgesic / Antipyretic",
           category: "painkillers",
@@ -177,6 +210,7 @@ db.serialize(() => {
         },
         {
           id: "med-2",
+          image: "med-2.svg",
           name_uz: "Amoksitsillin", name_en: "Amoxicillin",
           type_uz: "Antibiotik", type_en: "Antibiotic",
           category: "antibiotics",
@@ -196,6 +230,7 @@ db.serialize(() => {
         },
         {
           id: "med-3",
+          image: "med-3.svg",
           name_uz: "Ibuprofen", name_en: "Ibuprofen",
           type_uz: "Yallig'lanishga qarshi / Og'riq qoldiruvchi", type_en: "Anti-inflammatory / Analgesic",
           category: "painkillers",
@@ -215,6 +250,7 @@ db.serialize(() => {
         },
         {
           id: "med-4",
+          image: "med-4.svg",
           name_uz: "Kaptopril", name_en: "Captopril",
           type_uz: "Gipotenziv dori (Bosim tushiruvchi)", type_en: "Antihypertensive",
           category: "cardio",
@@ -234,6 +270,7 @@ db.serialize(() => {
         },
         {
           id: "med-5",
+          image: "med-5.svg",
           name_uz: "Aspirin (Kardiomagnil)", name_en: "Aspirin (Cardiomagnyl)",
           type_uz: "Antiagregant (Qon suyultiruvchi)", type_en: "Antiplatelet (Blood thinner)",
           category: "cardio",
@@ -253,6 +290,7 @@ db.serialize(() => {
         },
         {
           id: "med-6",
+          image: "med-6.svg",
           name_uz: "Mezim Forte", name_en: "Mezim Forte",
           type_uz: "Ferment preparati (Ovqat hazm qilish)", type_en: "Enzyme preparation (Digestion)",
           category: "digestive",
@@ -272,6 +310,7 @@ db.serialize(() => {
         },
         {
           id: "med-7",
+          image: "med-7.svg",
           name_uz: "Vitamin C (Askorbin kislotasi)", name_en: "Vitamin C (Ascorbic Acid)",
           type_uz: "Vitamin / Immunostimulyator", type_en: "Vitamin / Immune Stimulator",
           category: "vitamins",
@@ -291,6 +330,7 @@ db.serialize(() => {
         },
         {
           id: "med-8",
+          image: "med-8.svg",
           name_uz: "Vitamin D3 (Akvadetrim)", name_en: "Vitamin D3 (Aquadetrim)",
           type_uz: "Vitamin D3", type_en: "Vitamin D3",
           category: "vitamins",
@@ -312,16 +352,16 @@ db.serialize(() => {
 
       const stmt = db.prepare(`
         INSERT INTO medicines (
-          id, name_uz, name_en, type_uz, type_en, category, price,
+          id, image, name_uz, name_en, type_uz, type_en, category, price,
           manufacturer_uz, manufacturer_en, description_uz, description_en,
           usage_uz, usage_en, dosage_uz, dosage_en, sideEffects_uz, sideEffects_en,
           warnings_uz, warnings_en, prescription, views, rating, createdDate
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
       initialMeds.forEach(m => {
         stmt.run([
-          m.id, m.name_uz, m.name_en, m.type_uz, m.type_en, m.category, m.price,
+          m.id, m.image || 'medicine-placeholder.svg', m.name_uz, m.name_en, m.type_uz, m.type_en, m.category, m.price,
           m.manufacturer_uz, m.manufacturer_en, m.description_uz, m.description_en,
           m.usage_uz, m.usage_en, m.dosage_uz, m.dosage_en, m.sideEffects_uz, m.sideEffects_en,
           m.warnings_uz, m.warnings_en, m.prescription, m.views, m.rating, m.createdDate
