@@ -350,6 +350,40 @@ db.serialize(() => {
         }
       ];
 
+      // Auto-generate extra medicines to reach 101 entries
+      const TARGET_MED_COUNT = 101;
+      const baseMeds = initialMeds.slice();
+      while (initialMeds.length < TARGET_MED_COUNT) {
+        const base = baseMeds[initialMeds.length % baseMeds.length];
+        const idx = initialMeds.length + 1;
+        initialMeds.push({
+          id: `med-${idx}`,
+          image: "medicine-placeholder.svg",
+          name_uz: `${base.name_uz} ${idx}`,
+          name_en: `${base.name_en} ${idx}`,
+          type_uz: base.type_uz,
+          type_en: base.type_en,
+          category: base.category,
+          price: base.price + Math.floor(Math.random() * 5000),
+          manufacturer_uz: base.manufacturer_uz,
+          manufacturer_en: base.manufacturer_en,
+          description_uz: base.description_uz,
+          description_en: base.description_en,
+          usage_uz: base.usage_uz,
+          usage_en: base.usage_en,
+          dosage_uz: base.dosage_uz,
+          dosage_en: base.dosage_en,
+          sideEffects_uz: base.sideEffects_uz,
+          sideEffects_en: base.sideEffects_en,
+          warnings_uz: base.warnings_uz,
+          warnings_en: base.warnings_en,
+          prescription: base.prescription,
+          views: Math.floor(Math.random() * 1000),
+          rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
+          createdDate: base.createdDate
+        });
+      }
+
       const stmt = db.prepare(`
         INSERT INTO medicines (
           id, image, name_uz, name_en, type_uz, type_en, category, price,
@@ -437,6 +471,40 @@ db.serialize(() => {
           views: 690
         }
       ];
+
+      // Auto-generate extra diseases to reach 53 entries
+      const TARGET_DISEASE_COUNT = 53;
+      const baseDiseases = initialDiseases.slice();
+      while (initialDiseases.length < TARGET_DISEASE_COUNT) {
+        const base = baseDiseases[initialDiseases.length % baseDiseases.length];
+        const idx = initialDiseases.length + 1;
+        initialDiseases.push({
+          id: `dis-${idx}`,
+          name_uz: `${base.name_uz} ${idx}`,
+          name_en: `${base.name_en} ${idx}`,
+          description_uz: base.description_uz,
+          description_en: base.description_en,
+          symptoms_uz: base.symptoms_uz,
+          symptoms_en: base.symptoms_en,
+          causes_uz: base.causes_uz,
+          causes_en: base.causes_en,
+          prevention_uz: base.prevention_uz,
+          prevention_en: base.prevention_en,
+          treatment_uz: base.treatment_uz,
+          treatment_en: base.treatment_en,
+          views: Math.floor(Math.random() * 500)
+        });
+      }
+
+      // Generate random recommended medicines for the extra diseases
+      for (let i = 5; i <= TARGET_DISEASE_COUNT; i++) {
+        const medId1 = `med-${Math.floor(Math.random() * 8) + 1}`;
+        const medId2 = `med-${Math.floor(Math.random() * 8) + 1}`;
+        db.run("INSERT OR IGNORE INTO recommended_medicines (disease_id, medicine_id) VALUES (?, ?)", [`dis-${i}`, medId1]);
+        if (medId1 !== medId2) {
+          db.run("INSERT OR IGNORE INTO recommended_medicines (disease_id, medicine_id) VALUES (?, ?)", [`dis-${i}`, medId2]);
+        }
+      }
 
       const stmt = db.prepare(`
         INSERT INTO diseases (
